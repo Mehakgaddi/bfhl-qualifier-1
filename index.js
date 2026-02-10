@@ -114,4 +114,10 @@ app.get("/health", (req, res) => {
   });
 });
 
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(3000, () => console.log("Local server running on 3000"));
+}
+
+
 export default app;
