@@ -1,7 +1,9 @@
 import express from "express";
 import axios from "axios";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const OFFICIAL_EMAIL = "mehak0655.be23@chitkara.edu.in";
@@ -28,16 +30,21 @@ function hcf(a, b) {
   return a;
 }
 
-// POST /bfhl
+// Routes
+app.get("/health", (req, res) => {
+  res.json({
+    is_success: true,
+    official_email: OFFICIAL_EMAIL
+  });
+});
+
 app.post("/bfhl", async (req, res) => {
   try {
     const body = req.body;
 
+    // Fibonacci
     if (body.fibonacci !== undefined) {
       const n = body.fibonacci;
-      if (typeof n !== "number" || n <= 0)
-        return res.status(400).json({ is_success: false });
-
       return res.json({
         is_success: true,
         official_email: OFFICIAL_EMAIL,
@@ -45,15 +52,16 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
+    // Prime numbers
     if (body.prime !== undefined) {
-      const arr = body.prime;
       return res.json({
         is_success: true,
         official_email: OFFICIAL_EMAIL,
-        data: arr.filter(isPrime)
+        data: body.prime.filter(isPrime)
       });
     }
 
+    // LCM
     if (body.lcm !== undefined) {
       const arr = body.lcm;
       let ans = arr[0];
@@ -66,6 +74,7 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
+    // HCF
     if (body.hcf !== undefined) {
       const arr = body.hcf;
       let ans = arr[0];
@@ -78,6 +87,7 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
+    // AI (Gemini)
     if (body.AI !== undefined) {
       const question = body.AI;
       const geminiKey = process.env.GEMINI_KEY;
@@ -101,23 +111,9 @@ app.post("/bfhl", async (req, res) => {
 
     return res.status(400).json({ is_success: false });
 
-  } catch (e) {
+  } catch (err) {
     return res.status(500).json({ is_success: false });
   }
 });
-
-// GET /health
-app.get("/health", (req, res) => {
-  res.json({
-    is_success: true,
-    official_email: OFFICIAL_EMAIL
-  });
-});
-
-
-if (process.env.NODE_ENV !== "production") {
-  app.listen(3000, () => console.log("Local server running on 3000"));
-}
-
 
 export default app;
