@@ -33,7 +33,6 @@ app.post("/bfhl", async (req, res) => {
   try {
     const body = req.body;
 
-    // Fibonacci
     if (body.fibonacci !== undefined) {
       const n = body.fibonacci;
       if (typeof n !== "number" || n <= 0)
@@ -46,19 +45,15 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    // Prime numbers
     if (body.prime !== undefined) {
       const arr = body.prime;
-      const result = arr.filter(isPrime);
-
       return res.json({
         is_success: true,
         official_email: OFFICIAL_EMAIL,
-        data: result
+        data: arr.filter(isPrime)
       });
     }
 
-    // LCM
     if (body.lcm !== undefined) {
       const arr = body.lcm;
       let ans = arr[0];
@@ -71,7 +66,6 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    // HCF
     if (body.hcf !== undefined) {
       const arr = body.hcf;
       let ans = arr[0];
@@ -84,10 +78,8 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    // AI
     if (body.AI !== undefined) {
       const question = body.AI;
-
       const geminiKey = process.env.GEMINI_KEY;
 
       const aiRes = await axios.post(
@@ -98,8 +90,7 @@ app.post("/bfhl", async (req, res) => {
       );
 
       const text = aiRes.data.candidates[0].content.parts[0].text;
-
-      const answer = text.split(" ")[0]; // single-word output
+      const answer = text.split(" ")[0];
 
       return res.json({
         is_success: true,
@@ -122,4 +113,5 @@ app.get("/health", (req, res) => {
     official_email: OFFICIAL_EMAIL
   });
 });
-app.listen(5001, () => console.log("Running on port 5001"));
+
+export default app;
