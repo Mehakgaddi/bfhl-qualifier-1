@@ -1,6 +1,7 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import serverless from "serverless-http";
 
 const app = express();
 app.use(cors());
@@ -30,7 +31,7 @@ function hcf(a, b) {
   return a;
 }
 
-// Routes
+// GET /api/health
 app.get("/health", (req, res) => {
   res.json({
     is_success: true,
@@ -38,21 +39,19 @@ app.get("/health", (req, res) => {
   });
 });
 
+// POST /api/bfhl
 app.post("/bfhl", async (req, res) => {
   try {
     const body = req.body;
 
-    // Fibonacci
     if (body.fibonacci !== undefined) {
-      const n = body.fibonacci;
       return res.json({
         is_success: true,
         official_email: OFFICIAL_EMAIL,
-        data: fibonacci(n)
+        data: fibonacci(body.fibonacci)
       });
     }
 
-    // Prime numbers
     if (body.prime !== undefined) {
       return res.json({
         is_success: true,
@@ -61,7 +60,6 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    // LCM
     if (body.lcm !== undefined) {
       const arr = body.lcm;
       let ans = arr[0];
@@ -74,7 +72,6 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    // HCF
     if (body.hcf !== undefined) {
       const arr = body.hcf;
       let ans = arr[0];
@@ -87,7 +84,6 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    // AI (Gemini)
     if (body.AI !== undefined) {
       const question = body.AI;
       const geminiKey = process.env.GEMINI_KEY;
@@ -116,4 +112,4 @@ app.post("/bfhl", async (req, res) => {
   }
 });
 
-export default app;
+export const handler = serverless(app);
